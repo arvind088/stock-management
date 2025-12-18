@@ -1,4 +1,4 @@
-package stock;
+package com.stock.management;
 
 public class StockItem {
 	
