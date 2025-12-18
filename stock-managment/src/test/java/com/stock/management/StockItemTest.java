@@ -29,4 +29,18 @@ class StockItemTest {
 		assertNotNull(item1.getId(), "First item ID should not be null");
 		assertNotEquals(item1.getId(), item2.getId(), "Each product should have a unique ID");
 		}
+	
+	@Test
+	void testNegativeQuantityThrowsException() {
+		assertThrows(IllegalArgumentException.class, () -> {
+	    	new StockItem("Test Product", -1, 10.0);
+	        });
+	    }
+	
+	@Test
+	void testNegativePriceThrowsException() {
+		assertThrows(IllegalArgumentException.class, () -> {
+	    	new StockItem("Test Product", 10, -5.0);
+	        });
+	    }
 }
