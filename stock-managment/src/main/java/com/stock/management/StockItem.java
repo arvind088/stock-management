@@ -12,6 +12,10 @@ public class StockItem {
 		this.price = price;
 		}
 	
+	public String getId() {
+		return null; 
+		}
+	
 	public String getName() {
 		return name;
 		}
