@@ -29,4 +29,30 @@ class StockItemTest {
 		assertNotNull(item1.getId(), "First item ID should not be null");
 		assertNotEquals(item1.getId(), item2.getId(), "Each product should have a unique ID");
 		}
+	
+	@Test
+	void testValidConstruction() {
+		StockItem item = new StockItem("Laptop", 10, 1000.0);
+		assertAll("Verify all fields",
+				() -> assertNotNull(item.getId()),
+				() -> assertEquals("Laptop", item.getName()),
+				() -> assertEquals(10, item.getQuantity()),
+				() -> assertEquals(1000.0, item.getPrice())
+				);
+		}
+	
+
+	@Test
+	void testNegativeQuantityThrows() {
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+				() -> new StockItem("Laptop", -1, 1000.0));
+		assertEquals("Quantity cannot be negative", ex.getMessage());
+		}
+	
+	@Test
+	void testNegativePriceThrows() {
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+				() -> new StockItem("Laptop", 10, -5.0));
+		assertEquals("Price cannot be negative", ex.getMessage());
+		}
 }
