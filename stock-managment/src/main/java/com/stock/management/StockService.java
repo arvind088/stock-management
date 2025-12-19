@@ -20,7 +20,6 @@ public class StockService {
 		}
 	
 	public List<StockItem> getAllItems() {
-		// This avoids the NullPointerException i am not returning just null returing empty list from collection i will update it in refactor phase
-		return Collections.emptyList();
+		return repository.findAll();
 	}
 }
