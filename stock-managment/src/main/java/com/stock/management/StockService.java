@@ -1,9 +1,6 @@
 package com.stock.management;
 
 import java.util.List;
-import java.util.Arrays;
-import java.util.Collections;
-
 
 public class StockService {
 	private StockRepository repository;
