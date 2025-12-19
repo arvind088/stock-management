@@ -4,6 +4,8 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.List;
+import java.util.Arrays;
 
 class StockServiceTest {
 	private StockRepository mockRepo;
@@ -30,4 +32,14 @@ class StockServiceTest {
 			stockService.registerItem(null);
 			});
 		}
+	
+	@Test
+	void testGetAllItemsCallsRepository() {
+		List<StockItem> items = Arrays.asList(new StockItem("Laptop", 1, 500.0));
+		when(mockRepo.findAll()).thenReturn(items);
+		List<StockItem> result = stockService.getAllItems();
+		assertEquals(1, result.size());
+		verify(mockRepo, times(1)).findAll();
+		}
+	
 }

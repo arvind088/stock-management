@@ -1,5 +1,10 @@
 package com.stock.management;
 
+import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+
+
 public class StockService {
 	private StockRepository repository;
 	
@@ -13,4 +18,9 @@ public class StockService {
 			}
 		repository.save(item);
 		}
+	
+	public List<StockItem> getAllItems() {
+		// This avoids the NullPointerException i am not returning just null returing empty list from collection i will update it in refactor phase
+		return Collections.emptyList();
+	}
 }
