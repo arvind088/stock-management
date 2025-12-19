@@ -8,6 +8,9 @@ public class StockService {
 		}
 	
 	public void registerItem(StockItem item) {
-        // leaving it empty to make the code compile
-    }
+		if (item == null) {
+			throw new IllegalArgumentException("Item cannot be null");
+			}
+		repository.save(item);
+		}
 }
