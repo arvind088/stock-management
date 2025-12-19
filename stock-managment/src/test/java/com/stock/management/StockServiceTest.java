@@ -1,19 +1,33 @@
 package com.stock.management;
 
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StockServiceTest {
-    @Test
-    void testRegisterNewItemCallsRepository() {
-       
-        StockRepository mockRepo = mock(StockRepository.class);
-        // This will fail to compile because StockService doesn't exist yet! (to handle that i make a stock service class)
-        StockService service = new StockService(mockRepo); 
-        StockItem item = new StockItem("Laptop", 10, 500.0);
-
-        service.registerItem(item);
-
-        verify(mockRepo, times(1)).save(item);
-    }
+	private StockRepository mockRepo;
+	private StockService stockService;
+	
+	@BeforeEach
+	void setUp() {
+		mockRepo = mock(StockRepository.class);
+		stockService = new StockService(mockRepo);
+		}
+	
+	@Test
+	void testRegisterItemCallsRepositorySave() {
+		StockItem item = new StockItem("Laptop", 10, 1200.0);
+		stockService.registerItem(item);
+		
+		// This will FAIL because the skeleton method is empty
+		verify(mockRepo, times(1)).save(item);
+		}
+	
+	@Test
+	void testRegisterNullItemThrowsException() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			stockService.registerItem(null);
+			});
+		}
 }
