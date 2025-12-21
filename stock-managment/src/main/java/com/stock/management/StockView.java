@@ -11,6 +11,8 @@ public class StockView extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtName;
 	private JTextField txtQuantity;
+	private JTextField txtPrice;
+	
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
 	    	try {
@@ -31,14 +33,18 @@ public class StockView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		// The minimum code to pass the failing test:
 		txtName = new JTextField();
 		txtName.setName("txtName");
 		contentPane.add(txtName);
 		txtName.setColumns(10);
 		
+		txtPrice = new JTextField();
+		txtPrice.setName("txtPrice"); 
+		contentPane.add(txtPrice);
+		txtPrice.setColumns(10);
+		
 		txtQuantity = new JTextField();
-		txtQuantity.setName("txtQuantity"); // This matches the Robot's search string
+		txtQuantity.setName("txtQuantity"); 
 		contentPane.add(txtQuantity);
 		txtQuantity.setColumns(10);
 		}

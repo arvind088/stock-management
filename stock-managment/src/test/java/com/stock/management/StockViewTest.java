@@ -36,6 +36,11 @@ class StockViewTest {
 		window.textBox("txtName").requireVisible();
 		}
 	@Test
+	void testPriceTextFieldShouldBePresent() {
+		// This will fail because txtQuantity doesn't exist yet
+		window.textBox("txtPrice").requireVisible();
+	    }
+	@Test
 	void testQuantityTextFieldShouldBePresent() {
 		// This will fail because txtQuantity doesn't exist yet
 		window.textBox("txtQuantity").requireVisible();
