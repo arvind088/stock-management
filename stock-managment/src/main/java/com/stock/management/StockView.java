@@ -1,12 +1,29 @@
 package com.stock.management;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 public class StockView extends JFrame {
+	
 	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField txtName;
 	
 	public StockView() {
-		// title for now to satisfy our first test
-		setTitle("Stock Management App"); 
+		setTitle("Stock Management App");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		
+		// The minimum code to pass the failing test:
+		txtName = new JTextField();
+		txtName.setName("txtName");
+		contentPane.add(txtName);
+		txtName.setColumns(10);
 		}
 }
