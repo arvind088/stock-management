@@ -35,6 +35,11 @@ class StockViewTest {
 		// The robot looks for a component with name txtName
 		window.textBox("txtName").requireVisible();
 		}
+	@Test
+	void testQuantityTextFieldShouldBePresent() {
+		// This will fail because txtQuantity doesn't exist yet
+		window.textBox("txtQuantity").requireVisible();
+	    }
 	
 }
 
