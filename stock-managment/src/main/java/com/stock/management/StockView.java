@@ -11,6 +11,17 @@ public class StockView extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtName;
 	
+	public static void main(String[] args) {
+		java.awt.EventQueue.invokeLater(() -> {
+	    	try {
+	        	StockView frame = new StockView();
+	            frame.setVisible(true);
+	            } catch (Exception e) {
+	        	e.printStackTrace();
+	            }
+	        });
+	    }
+
 	public StockView() {
 		setTitle("Stock Management App");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
