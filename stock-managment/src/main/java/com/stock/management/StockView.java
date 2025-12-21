@@ -10,7 +10,7 @@ public class StockView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtName;
-	
+	private JTextField txtQuantity;
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
 	    	try {
@@ -36,5 +36,10 @@ public class StockView extends JFrame {
 		txtName.setName("txtName");
 		contentPane.add(txtName);
 		txtName.setColumns(10);
+		
+		txtQuantity = new JTextField();
+		txtQuantity.setName("txtQuantity"); // This matches the Robot's search string
+		contentPane.add(txtQuantity);
+		txtQuantity.setColumns(10);
 		}
 }
