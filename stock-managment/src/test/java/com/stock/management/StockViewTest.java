@@ -58,5 +58,18 @@ class StockViewTest {
 	    window.textBox("txtPrice").enterText("500");
 	    window.button("btnAdd").requireEnabled();
 	    }
+	@Test
+	void testAddButtonShouldBeDisabledWhenAnyFieldIsCleared() {
+		// Fill all fields to enable button
+		window.textBox("txtName").enterText("Laptop");
+		window.textBox("txtQuantity").enterText("10");
+		window.textBox("txtPrice").enterText("500");
+		
+		// Clear one field
+		window.textBox("txtName").deleteText();
+		
+		// Verify it is disabled again
+		window.button("btnAdd").requireDisabled();
+	}
 }
 
