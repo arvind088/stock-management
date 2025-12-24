@@ -1,5 +1,8 @@
 package com.stock.management;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -51,9 +54,24 @@ public class StockView extends JFrame {
 		txtQuantity.setColumns(10);
 		
 		btnAdd = new JButton("Add");
-		btnAdd.setName("btnAdd"); // The Robot finds it by this string
-		btnAdd.setEnabled(false); // We set it to disabled to pass the second requirement
+		btnAdd.setName("btnAdd");
+		btnAdd.setEnabled(false); 
 		contentPane.add(btnAdd);
-		}
 
+		// FIX: Moved inside the constructor
+		KeyAdapter btnAddEnabler = new KeyAdapter() {
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        btnAdd.setEnabled(
+		            !txtName.getText().trim().isEmpty() &&
+		            !txtQuantity.getText().trim().isEmpty() &&
+		            !txtPrice.getText().trim().isEmpty()
+		        );
+		    }
+		};
+
+		txtName.addKeyListener(btnAddEnabler);
+		txtQuantity.addKeyListener(btnAddEnabler);
+		txtPrice.addKeyListener(btnAddEnabler);
+	}
 }
