@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -44,16 +45,19 @@ public class StockView extends JFrame {
 		
 		txtName = new JTextField();
 		txtName.setName("txtName");
+		contentPane.add(new JLabel("Name"));
 		contentPane.add(txtName);
 		txtName.setColumns(10);
 		
 		txtPrice = new JTextField();
-		txtPrice.setName("txtPrice"); 
+		txtPrice.setName("txtPrice");
+		contentPane.add(new JLabel("Price"));
 		contentPane.add(txtPrice);
 		txtPrice.setColumns(10);
 		
 		txtQuantity = new JTextField();
-		txtQuantity.setName("txtQuantity"); 
+		txtQuantity.setName("txtQuantity");
+		contentPane.add(new JLabel("Quantity"));
 		contentPane.add(txtQuantity);
 		txtQuantity.setColumns(10);
 		
