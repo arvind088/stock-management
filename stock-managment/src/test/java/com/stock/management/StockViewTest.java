@@ -71,5 +71,10 @@ class StockViewTest {
 		// Verify it is disabled again
 		window.button("btnAdd").requireDisabled();
 	}
+		@Test
+	void testStockTableShouldBePresent() {
+		// for JTable named 'stockTable'
+		window.table("stockTable").requireVisible();
+	    }
 }
 
