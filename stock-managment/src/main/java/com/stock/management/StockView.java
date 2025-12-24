@@ -22,6 +22,7 @@ public class StockView extends JFrame {
 	private JButton btnAdd;
 	private JButton btnDelete;
 	private JTable stockTable;
+	private JLabel lblErrorMessage;
 
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -70,6 +71,10 @@ public class StockView extends JFrame {
 		btnDelete.setName("btnDelete");
 		btnDelete.setEnabled(false);    // Starts disabled as per our test
 		contentPane.add(btnDelete);
+		
+		lblErrorMessage = new JLabel(" ");
+		lblErrorMessage.setName("errorMessageLabel");
+		contentPane.add(lblErrorMessage);
 		
 		stockTable = new JTable();
 		stockTable.setName("stockTable"); // This name must match the test!
