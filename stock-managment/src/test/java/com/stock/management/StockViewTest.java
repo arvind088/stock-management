@@ -82,5 +82,9 @@ class StockViewTest {
 		window.button("btnDelete").requireVisible();
 		window.button("btnDelete").requireDisabled();
 		}
+	@Test
+	void testErrorMessageLabelShouldBePresentAndEmpty() {
+		window.label("errorMessageLabel").requireText(" ");
+	    }
 }
 
