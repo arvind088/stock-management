@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -17,6 +19,7 @@ public class StockView extends JFrame {
 	private JTextField txtQuantity;
 	private JTextField txtPrice;
 	private JButton btnAdd;
+	private JTable stockTable;
 	
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -57,6 +60,14 @@ public class StockView extends JFrame {
 		btnAdd.setName("btnAdd");
 		btnAdd.setEnabled(false); 
 		contentPane.add(btnAdd);
+		
+		stockTable = new JTable();
+		stockTable.setName("stockTable"); // This name must match the test!
+
+		// ScrollPane add to the contentPane
+		JScrollPane scrollPane = new JScrollPane(stockTable);
+		contentPane.add(scrollPane);
+		
 
 		// FIX: Moved inside the constructor
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
@@ -74,4 +85,6 @@ public class StockView extends JFrame {
 		txtQuantity.addKeyListener(btnAddEnabler);
 		txtPrice.addKeyListener(btnAddEnabler);
 	}
+	
+	
 }
