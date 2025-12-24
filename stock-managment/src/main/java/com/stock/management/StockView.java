@@ -19,8 +19,9 @@ public class StockView extends JFrame {
 	private JTextField txtQuantity;
 	private JTextField txtPrice;
 	private JButton btnAdd;
+	private JButton btnDelete;
 	private JTable stockTable;
-	
+
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
 	    	try {
@@ -60,6 +61,11 @@ public class StockView extends JFrame {
 		btnAdd.setName("btnAdd");
 		btnAdd.setEnabled(false); 
 		contentPane.add(btnAdd);
+		
+		btnDelete = new JButton("Delete");
+		btnDelete.setName("btnDelete");
+		btnDelete.setEnabled(false);    // Starts disabled as per our test
+		contentPane.add(btnDelete);
 		
 		stockTable = new JTable();
 		stockTable.setName("stockTable"); // This name must match the test!
