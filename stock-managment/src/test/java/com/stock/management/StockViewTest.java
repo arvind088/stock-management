@@ -70,11 +70,17 @@ class StockViewTest {
 		
 		// Verify it is disabled again
 		window.button("btnAdd").requireDisabled();
-	}
-		@Test
+		}
+	@Test
 	void testStockTableShouldBePresent() {
 		// for JTable named 'stockTable'
 		window.table("stockTable").requireVisible();
-	    }
+		}
+	@Test
+	void testDeleteButtonShouldBePresentAndDisabled() {
+		// for the  btnDelete
+		window.button("btnDelete").requireVisible();
+		window.button("btnDelete").requireDisabled();
+		}
 }
 
