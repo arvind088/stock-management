@@ -51,6 +51,12 @@ class StockViewTest {
 		window.button("btnAdd").requireVisible();
 		window.button("btnAdd").requireDisabled();
 		}
-	
+	@Test
+	void testAddButtonShouldBeEnabledWhenAllFieldsAreNotEmpty() {
+		window.textBox("txtName").enterText("Laptop");
+	    window.textBox("txtQuantity").enterText("10");
+	    window.textBox("txtPrice").enterText("500");
+	    window.button("btnAdd").requireEnabled();
+	    }
 }
 
