@@ -45,6 +45,12 @@ class StockViewTest {
 		// This will fail because txtQuantity doesn't exist yet
 		window.textBox("txtQuantity").requireVisible();
 	    }
+	@Test
+	void testAddButtonShouldBePresentAndDisabled() {
+		// This will fail because 'btnAdd' doesn't exist yet
+		window.button("btnAdd").requireVisible();
+		window.button("btnAdd").requireDisabled();
+		}
 	
 }
 
