@@ -1,5 +1,6 @@
 package com.stock.management;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -12,6 +13,7 @@ public class StockView extends JFrame {
 	private JTextField txtName;
 	private JTextField txtQuantity;
 	private JTextField txtPrice;
+	private JButton btnAdd;
 	
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -47,5 +49,11 @@ public class StockView extends JFrame {
 		txtQuantity.setName("txtQuantity"); 
 		contentPane.add(txtQuantity);
 		txtQuantity.setColumns(10);
+		
+		btnAdd = new JButton("Add");
+		btnAdd.setName("btnAdd"); // The Robot finds it by this string
+		btnAdd.setEnabled(false); // We set it to disabled to pass the second requirement
+		contentPane.add(btnAdd);
 		}
+
 }
