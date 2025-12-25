@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class StockViewTest {
 	
 	private FrameFixture window;
@@ -109,5 +111,13 @@ class StockViewTest {
 		window.label("errorMessageLabel").requireVisible();
 		window.label("errorMessageLabel").requireText(" ");
 		}
+	@Test
+	void testGetStockTableShouldReturnTheTableComponent() {
+	    // Cast the target to StockView so you can call your custom methods
+	    StockView view = (StockView) window.target(); 
+	    
+	    JTable table = view.getStockTable();
+	    assertThat(table).isNotNull();
+	    assertThat(table.getName()).isEqualTo("stockTable");
+	}
 }
-
