@@ -73,10 +73,6 @@ public class StockView extends JFrame {
 		btnDelete.setName("btnDelete");
 		btnDelete.setEnabled(false);    // Starts disabled as per our test
 		contentPane.add(btnDelete);
-		
-		lblErrorMessage = new JLabel(" ");
-		lblErrorMessage.setName("errorMessageLabel");
-		contentPane.add(lblErrorMessage);
 		 
 		stockTable = new JTable();
 		stockTable.setName("stockTable"); // This name must match the test!
@@ -91,6 +87,10 @@ public class StockView extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(stockTable);
 		contentPane.add(scrollPane);
 		
+		lblErrorMessage = new JLabel(" ");
+		lblErrorMessage.setName("errorMessageLabel");
+		contentPane.add(lblErrorMessage);
+		lblErrorMessage.setForeground(java.awt.Color.RED);
 
 		// FIX: Moved inside the constructor
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
@@ -108,6 +108,5 @@ public class StockView extends JFrame {
 		txtQuantity.addKeyListener(btnAddEnabler);
 		txtPrice.addKeyListener(btnAddEnabler);
 	}
-	
 	
 }
