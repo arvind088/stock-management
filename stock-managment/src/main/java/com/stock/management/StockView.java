@@ -34,7 +34,9 @@ public class StockView extends JFrame {
 	            }
 	        });
 	    }
-
+  	public JTable getStockTable() {
+	    return stockTable;
+	}
 	public StockView() {
 		setTitle("Stock Management App");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,9 +77,15 @@ public class StockView extends JFrame {
 		lblErrorMessage = new JLabel(" ");
 		lblErrorMessage.setName("errorMessageLabel");
 		contentPane.add(lblErrorMessage);
-		
+		 
 		stockTable = new JTable();
 		stockTable.setName("stockTable"); // This name must match the test!
+		
+		stockTable.getSelectionModel().addListSelectionListener(e -> {
+		    // If selectedRow is not -1, it means a row is selected
+		    boolean hasSelection = stockTable.getSelectedRow() != -1;
+		    btnDelete.setEnabled(hasSelection);
+		});
 
 		// ScrollPane add to the contentPane
 		JScrollPane scrollPane = new JScrollPane(stockTable);
