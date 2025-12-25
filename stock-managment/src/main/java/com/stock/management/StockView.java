@@ -1,5 +1,10 @@
 package com.stock.management;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -11,9 +16,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class StockView extends JFrame {
-	
+
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtName;
@@ -26,87 +32,113 @@ public class StockView extends JFrame {
 
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
-	    	try {
-	        	StockView frame = new StockView();
-	            frame.setVisible(true);
-	            } catch (Exception e) {
-	        	e.printStackTrace();
-	            }
-	        });
-	    }
-  	public JTable getStockTable() {
-	    return stockTable;
+			try {
+				StockView frame = new StockView();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
+
+	public JTable getStockTable() {
+		return stockTable;
+	}
+
 	public StockView() {
-		setTitle("Stock Management App");
+		setTitle("Stock Manager Pro");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		
+		setBounds(100, 100, 500, 500);
+
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(new Color(245, 245, 245)); // Light Grey background
+		contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
 		setContentPane(contentPane);
-		
+
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[] { 100, 200 }; // Fixed label width
+		contentPane.setLayout(gbl_contentPane);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(8, 8, 8, 8); // Padding between elements
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+
+		// --- Name ---
+		gbc.gridx = 0; gbc.gridy = 0;
+		contentPane.add(new JLabel("Product Name:"), gbc);
 		txtName = new JTextField();
 		txtName.setName("txtName");
-		contentPane.add(new JLabel("Name"));
-		contentPane.add(txtName);
-		txtName.setColumns(10);
-		
+		gbc.gridx = 1;
+		contentPane.add(txtName, gbc);
+
+		// --- Price ---
+		gbc.gridx = 0; gbc.gridy = 1;
+		contentPane.add(new JLabel("Price ($):"), gbc);
 		txtPrice = new JTextField();
 		txtPrice.setName("txtPrice");
-		contentPane.add(new JLabel("Price"));
-		contentPane.add(txtPrice);
-		txtPrice.setColumns(10);
-		
+		gbc.gridx = 1;
+		contentPane.add(txtPrice, gbc);
+
+		// --- Quantity ---
+		gbc.gridx = 0; gbc.gridy = 2;
+		contentPane.add(new JLabel("Quantity:"), gbc);
 		txtQuantity = new JTextField();
 		txtQuantity.setName("txtQuantity");
-		contentPane.add(new JLabel("Quantity"));
-		contentPane.add(txtQuantity);
-		txtQuantity.setColumns(10);
-		
-		btnAdd = new JButton("Add");
+		gbc.gridx = 1;
+		contentPane.add(txtQuantity, gbc);
+
+		// --- Add Button ---
+		btnAdd = new JButton("Add Item");
 		btnAdd.setName("btnAdd");
-		btnAdd.setEnabled(false); 
-		contentPane.add(btnAdd);
-		
-		btnDelete = new JButton("Delete");
-		btnDelete.setName("btnDelete");
-		btnDelete.setEnabled(false);    // Starts disabled as per our test
-		contentPane.add(btnDelete);
-		 
-		stockTable = new JTable();
-		stockTable.setName("stockTable"); // This name must match the test!
-		
+		btnAdd.setEnabled(false);
+		btnAdd.setBackground(new Color(70, 130, 180)); // Steel Blue
+		btnAdd.setForeground(Color.BLACK);
+		gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+		contentPane.add(btnAdd, gbc);
+
+		// --- Table ---
+		stockTable = new JTable(new DefaultTableModel(new Object[][] {}, new String[] { "Product", "Price", "Qty" }));
+		stockTable.setName("stockTable");
+		stockTable.setRowHeight(25);
 		stockTable.getSelectionModel().addListSelectionListener(e -> {
-		    // If selectedRow is not -1, it means a row is selected
-		    boolean hasSelection = stockTable.getSelectedRow() != -1;
-		    btnDelete.setEnabled(hasSelection);
+			btnDelete.setEnabled(stockTable.getSelectedRow() != -1);
 		});
 
-		// ScrollPane add to the contentPane
 		JScrollPane scrollPane = new JScrollPane(stockTable);
-		contentPane.add(scrollPane);
-		
+		gbc.gridy = 4; gbc.weighty = 1.0; // Makes table expand to fill space
+		gbc.fill = GridBagConstraints.BOTH;
+		contentPane.add(scrollPane, gbc);
+
+		// --- Delete Button ---
+		btnDelete = new JButton("Delete Selected");
+		btnDelete.setName("btnDelete");
+		btnDelete.setEnabled(false);
+		btnDelete.setForeground(new Color(178, 34, 34)); // Firebrick Red
+		gbc.gridy = 5; gbc.weighty = 0; gbc.fill = GridBagConstraints.HORIZONTAL;
+		contentPane.add(btnDelete, gbc);
+
+		// --- Error Message ---
 		lblErrorMessage = new JLabel(" ");
 		lblErrorMessage.setName("errorMessageLabel");
-		contentPane.add(lblErrorMessage);
-		lblErrorMessage.setForeground(java.awt.Color.RED);
+		lblErrorMessage.setForeground(Color.RED);
+		lblErrorMessage.setFont(new Font("SansSerif", Font.ITALIC, 11));
+		gbc.gridy = 6;
+		contentPane.add(lblErrorMessage, gbc);
 
-		// FIX: Moved inside the constructor
+		// --- Key Listeners ---
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
-		    @Override
-		    public void keyReleased(KeyEvent e) {
-		        btnAdd.setEnabled(
-		            !txtName.getText().trim().isEmpty() &&
-		            !txtQuantity.getText().trim().isEmpty() &&
-		            !txtPrice.getText().trim().isEmpty()
-		        );
-		    }
+			@Override
+			public void keyReleased(KeyEvent e) {
+				btnAdd.setEnabled(
+					!txtName.getText().trim().isEmpty() && 
+					!txtQuantity.getText().trim().isEmpty() && 
+					!txtPrice.getText().trim().isEmpty()
+				);
+			}
 		};
 
 		txtName.addKeyListener(btnAddEnabler);
 		txtQuantity.addKeyListener(btnAddEnabler);
 		txtPrice.addKeyListener(btnAddEnabler);
 	}
-	
 }
