@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 class StockViewTest {
 	
@@ -86,5 +87,27 @@ class StockViewTest {
 	void testErrorMessageLabelShouldBePresentAndEmpty() {
 		window.label("errorMessageLabel").requireText(" ");
 	    }
+	@Test
+	void testDeleteButtonShouldBeEnabledOnlyWhenARowIsSelected() {
+		// Manually add a row to the table model (we'll do this simply for now)
+		JTable table = window.table("stockTable").target();
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.addColumn("Column 1");
+		model.addRow(new Object[] {"Item 1"});
+		
+		// Select the row
+		window.table("stockTable").selectRows(0);
+		window.button("btnDelete").requireEnabled();
+		
+		// Clear selection
+		window.table("stockTable").unselectRows(0);
+		window.button("btnDelete").requireDisabled();
+		}
+	@Test
+	void testErrorMessageLabelShouldBePresentAndInitiallyEmpty() {
+		// Change the name to something unique we haven't added yet
+		window.label("errorMessageLabel").requireVisible();
+		window.label("errorMessageLabel").requireText(" ");
+		}
 }
 
