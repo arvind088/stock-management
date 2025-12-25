@@ -18,4 +18,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file stock-managment/pom.xml
+      run: mvn -B package -Djava.awt.headless=true --file stock-managment/pom.xml
