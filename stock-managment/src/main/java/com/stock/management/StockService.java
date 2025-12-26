@@ -20,6 +20,6 @@ public class StockService {
 		return repository.findAll();
 	}
 	public void delete(StockItem item) {
-		// This can remain empty or call repository.delete(item)
+		repository.delete(item);
 	}
 }

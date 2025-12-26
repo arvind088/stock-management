@@ -8,11 +8,14 @@ public class StockControllerTest {
 	private StockController controller;
 	private StockView view;
 	private StockService service;
+	private StockRepository repository;
+
 	
 	@BeforeEach
 	void setUp() {
 		view = mock(StockView.class);
 		service = mock(StockService.class); // Mocking your existing StockService
+		repository = mock(StockRepository.class);
 		controller = new StockController(view, service);
 		}
 	
@@ -20,17 +23,13 @@ public class StockControllerTest {
 	void testAddNewItemShouldCallServiceRegister() {
 		StockItem item = new StockItem("Apple", 10, 1);
 		controller.addNewItem(item);
-		
-		// This will FAIL because addNewItem() is empty
 		verify(service).registerItem(item);
 		}
 	@Test
 	void testDeleteItemShouldCallServiceDelete() {
 	    
 		StockItem item = new StockItem("Apple", 10, 1.5);
-		
 		controller.deleteItem(item);
-		//This will FAIL because the method body is empty
 		verify(service).delete(item);
 	}
 }

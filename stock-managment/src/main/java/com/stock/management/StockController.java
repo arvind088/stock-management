@@ -12,6 +12,6 @@ public class StockController {
 		service.registerItem(item);
 		}
 	public void deleteItem(StockItem item) {
-		service.delete(item);
-	}
+		service.delete(item); // Fixed: Calls service
+		}
 }

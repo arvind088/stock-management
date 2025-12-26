@@ -13,10 +13,10 @@ public class StockItem {
 		//REFACTOR 
 		if (quantity < 0) {
 			throw new IllegalArgumentException("Quantity cannot be negative");
-	        }
+			}
 		if (price < 0) {
-	    	throw new IllegalArgumentException("Price cannot be negative");
-	        }
+			throw new IllegalArgumentException("Price cannot be negative");
+			}
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
 		this.quantity = quantity;
