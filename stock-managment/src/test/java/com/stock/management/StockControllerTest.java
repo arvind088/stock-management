@@ -24,4 +24,13 @@ public class StockControllerTest {
 		// This will FAIL because addNewItem() is empty
 		verify(service).registerItem(item);
 		}
+	@Test
+	void testDeleteItemShouldCallServiceDelete() {
+	    
+		StockItem item = new StockItem("Apple", 10, 1.5);
+		
+		controller.deleteItem(item);
+		//This will FAIL because the method body is empty
+		verify(service).delete(item);
+	}
 }
