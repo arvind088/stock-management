@@ -11,4 +11,7 @@ public class StockController {
 	public void addNewItem(StockItem item) {
 		service.registerItem(item);
 		}
+	public void deleteItem(StockItem item) {
+		service.delete(item);
+	}
 }

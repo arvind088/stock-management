@@ -19,4 +19,7 @@ public class StockService {
 	public List<StockItem> getAllItems() {
 		return repository.findAll();
 	}
+	public void delete(StockItem item) {
+		// This can remain empty or call repository.delete(item)
+	}
 }
