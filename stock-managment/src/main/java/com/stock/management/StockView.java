@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,6 +45,8 @@ public class StockView extends JFrame {
 	public JTable getStockTable() {
 		return stockTable;
 	}
+	public void showAllStock(List<StockItem> items) {
+		}
 
 	public StockView() {
 		setTitle("Stock Manager Pro");
