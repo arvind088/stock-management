@@ -24,7 +24,8 @@ public class StockService {
 	}
 	
 	public void updateItemQuantity(StockItem item, int newQuantity) {
-	    // Minimum code to satisfy the compiler
+		StockItem updatedItem = new StockItem(item.getName(), newQuantity, item.getPrice());
+		repository.save(updatedItem);
 	   
 	}
 }
