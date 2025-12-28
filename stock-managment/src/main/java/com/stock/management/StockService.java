@@ -22,4 +22,9 @@ public class StockService {
 	public void delete(StockItem item) {
 		repository.delete(item);
 	}
+	
+	public void updateItemQuantity(StockItem item, int newQuantity) {
+	    // Minimum code to satisfy the compiler
+	   
+	}
 }
