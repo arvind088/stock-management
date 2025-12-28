@@ -55,4 +55,18 @@ class StockItemTest {
 				() -> new StockItem("Laptop", 10, -5.0));
 		assertEquals("Price cannot be negative", ex.getMessage());
 		}
+	@Test
+	void testQuantityAtZeroShouldBeAllowed() {
+	    // Testing the boundary to kill the PIT mutant
+	    StockItem item = new StockItem("Apple", 0, 1.0);
+	    assertEquals(0, item.getQuantity());
+	}
+	@Test
+	void testPriceAtZeroShouldBeAllowed() {
+		// Testing the exact boundary (0.0) to kill the PIT survivor
+		double zeroPrice = 0.0;
+		StockItem item = new StockItem("Free Sample", 10, zeroPrice);
+		
+		assertEquals(zeroPrice, item.getPrice(), 0.001);
+		}
 }
