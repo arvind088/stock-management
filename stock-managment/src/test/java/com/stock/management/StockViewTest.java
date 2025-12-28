@@ -12,6 +12,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
 
 class StockViewTest {
 	
@@ -120,4 +124,18 @@ class StockViewTest {
 	    assertThat(table).isNotNull();
 	    assertThat(table.getName()).isEqualTo("stockTable");
 	}
+	
+	@Test
+	public void testShowAllStockShouldUpdateTableRows() {
+		
+		StockItem item = new StockItem("Apple", 10, 1.5);
+		List<StockItem> items = Arrays.asList(item);
+		((StockView) window.target()).showAllStock(items);
+	
+		String[][] contents = window.table("stockTable").contents();
+		assertEquals(1, contents.length);
+		assertEquals("Apple", contents[0][0]);
+		assertEquals("1.5", contents[0][1]);
+		assertEquals("10", contents[0][2]);
+		}
 }

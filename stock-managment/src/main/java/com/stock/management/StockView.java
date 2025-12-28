@@ -46,6 +46,15 @@ public class StockView extends JFrame {
 		return stockTable;
 	}
 	public void showAllStock(List<StockItem> items) {
+		DefaultTableModel model = (DefaultTableModel) stockTable.getModel();
+		model.setRowCount(0);
+		for (StockItem item : items) {
+			model.addRow(new Object[] { 
+					item.getName(), 
+					String.valueOf(item.getPrice()), 
+					String.valueOf(item.getQuantity()) 
+					});
+			}	
 		}
 
 	public StockView() {
