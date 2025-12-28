@@ -32,4 +32,14 @@ public class StockControllerTest {
 		controller.deleteItem(item);
 		verify(service).delete(item);
 	}
+
+	@Test
+	void testUpdateItemShouldCallServiceAndRefreshView() {
+		StockItem itemToUpdate = new StockItem("Laptop", 5, 1000.0);
+		int updatedQty = 15;
+		
+		controller.updateStockItem(itemToUpdate, updatedQty);
+		verify(service).updateItemQuantity(itemToUpdate, updatedQty);
+		verify(view).showAllStock(anyList());
+	}
 }
