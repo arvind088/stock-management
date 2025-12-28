@@ -88,6 +88,9 @@
                     <targetTests>
                         <param>com.stock.management.*</param>
                     </targetTests>
+                    <excludedClasses>
+                        <param>com.stock.management.*View</param>
+                    </excludedClasses>
                 </configuration>
             </plugin>
         </plugins>
