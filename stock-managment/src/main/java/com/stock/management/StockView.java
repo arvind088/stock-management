@@ -28,6 +28,7 @@ public class StockView extends JFrame {
 	private JTextField txtPrice;
 	private JButton btnAdd;
 	private JButton btnDelete;
+	private JButton btnUpdate; // Added for the new feature
 	private JTable stockTable;
 	private JLabel lblErrorMessage;
 
@@ -45,6 +46,7 @@ public class StockView extends JFrame {
 	public JTable getStockTable() {
 		return stockTable;
 	}
+
 	public void showAllStock(List<StockItem> items) {
 		DefaultTableModel model = (DefaultTableModel) stockTable.getModel();
 		model.setRowCount(0);
@@ -53,26 +55,26 @@ public class StockView extends JFrame {
 					item.getName(), 
 					String.valueOf(item.getPrice()), 
 					String.valueOf(item.getQuantity()) 
-					});
-			}	
-		}
+			});
+		}	
+	}
 
 	public StockView() {
 		setTitle("Stock Manager Pro");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 500);
+		setBounds(100, 100, 500, 600); // Increased height slightly for new button
 
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(245, 245, 245)); // Light Grey background
+		contentPane.setBackground(new Color(245, 245, 245));
 		contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
 		setContentPane(contentPane);
 
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 100, 200 }; // Fixed label width
+		gbl_contentPane.columnWidths = new int[] { 100, 200 };
 		contentPane.setLayout(gbl_contentPane);
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(8, 8, 8, 8); // Padding between elements
+		gbc.insets = new Insets(8, 8, 8, 8);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		// --- Name ---
@@ -103,7 +105,7 @@ public class StockView extends JFrame {
 		btnAdd = new JButton("Add Item");
 		btnAdd.setName("btnAdd");
 		btnAdd.setEnabled(false);
-		btnAdd.setBackground(new Color(70, 130, 180)); // Steel Blue
+		btnAdd.setBackground(new Color(70, 130, 180));
 		btnAdd.setForeground(Color.BLACK);
 		gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
 		contentPane.add(btnAdd, gbc);
@@ -112,21 +114,32 @@ public class StockView extends JFrame {
 		stockTable = new JTable(new DefaultTableModel(new Object[][] {}, new String[] { "Product", "Price", "Qty" }));
 		stockTable.setName("stockTable");
 		stockTable.setRowHeight(25);
+		
+		// Listener for enabling/disabling buttons based on selection
 		stockTable.getSelectionModel().addListSelectionListener(e -> {
-			btnDelete.setEnabled(stockTable.getSelectedRow() != -1);
+			boolean rowSelected = stockTable.getSelectedRow() != -1;
+			btnDelete.setEnabled(rowSelected);
+			btnUpdate.setEnabled(rowSelected);
 		});
 
 		JScrollPane scrollPane = new JScrollPane(stockTable);
-		gbc.gridy = 4; gbc.weighty = 1.0; // Makes table expand to fill space
+		gbc.gridy = 4; gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		contentPane.add(scrollPane, gbc);
+
+		// --- Update Button (New) ---
+		btnUpdate = new JButton("Update Selected Quantity");
+		btnUpdate.setName("btnUpdate");
+		btnUpdate.setEnabled(false); // Starts disabled
+		gbc.gridy = 5; gbc.weighty = 0; gbc.fill = GridBagConstraints.HORIZONTAL;
+		contentPane.add(btnUpdate, gbc);
 
 		// --- Delete Button ---
 		btnDelete = new JButton("Delete Selected");
 		btnDelete.setName("btnDelete");
-		btnDelete.setEnabled(false);
-		btnDelete.setForeground(new Color(178, 34, 34)); // Firebrick Red
-		gbc.gridy = 5; gbc.weighty = 0; gbc.fill = GridBagConstraints.HORIZONTAL;
+		btnDelete.setEnabled(false); // Starts disabled
+		btnDelete.setForeground(new Color(178, 34, 34));
+		gbc.gridy = 6;
 		contentPane.add(btnDelete, gbc);
 
 		// --- Error Message ---
@@ -134,7 +147,7 @@ public class StockView extends JFrame {
 		lblErrorMessage.setName("errorMessageLabel");
 		lblErrorMessage.setForeground(Color.RED);
 		lblErrorMessage.setFont(new Font("SansSerif", Font.ITALIC, 11));
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 		contentPane.add(lblErrorMessage, gbc);
 
 		// --- Key Listeners ---
