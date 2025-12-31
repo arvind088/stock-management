@@ -22,4 +22,10 @@ public class StockService {
 	public void delete(StockItem item) {
 		repository.delete(item);
 	}
+	
+	public void updateItemQuantity(StockItem item, int newQuantity) {
+		StockItem updatedItem = new StockItem(item.getName(), newQuantity, item.getPrice());
+		repository.save(updatedItem);
+	   
+	}
 }

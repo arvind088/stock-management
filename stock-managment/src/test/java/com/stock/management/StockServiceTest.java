@@ -49,4 +49,18 @@ class StockServiceTest {
         verify(repository).delete(item);
         }
 	
+	@Test
+	void testUpdateItemQuantityShouldReplaceExistingItem() {
+		
+		StockItem oldItem = new StockItem("Apple", 10, 1.0);
+		int newQuantity = 25;
+		
+		service.updateItemQuantity(oldItem, newQuantity);
+		
+		verify(repository).save(argThat(item ->
+		item.getName().equals("Apple") && 
+		item.getQuantity() == 25
+		));
+		}
+
 }

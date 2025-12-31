@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,8 +28,12 @@ public class StockView extends JFrame {
 	private JTextField txtPrice;
 	private JButton btnAdd;
 	private JButton btnDelete;
+	private JButton btnUpdate; 
 	private JTable stockTable;
 	private JLabel lblErrorMessage;
+	
+	// Added controller field to satisfy tests
+	private StockController controller;
 
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -41,26 +46,43 @@ public class StockView extends JFrame {
 		});
 	}
 
+	// Added setter for the controller
+	public void setController(StockController controller) {
+		this.controller = controller;
+	}
+
 	public JTable getStockTable() {
 		return stockTable;
+	}
+
+	public void showAllStock(List<StockItem> items) {
+		DefaultTableModel model = (DefaultTableModel) stockTable.getModel();
+		model.setRowCount(0);
+		for (StockItem item : items) {
+			model.addRow(new Object[] { 
+					item.getName(), 
+					String.valueOf(item.getPrice()), 
+					String.valueOf(item.getQuantity()) 
+			});
+		}	
 	}
 
 	public StockView() {
 		setTitle("Stock Manager Pro");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 500);
+		setBounds(100, 100, 500, 600); 
 
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(245, 245, 245)); // Light Grey background
+		contentPane.setBackground(new Color(245, 245, 245));
 		contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
 		setContentPane(contentPane);
 
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 100, 200 }; // Fixed label width
+		gbl_contentPane.columnWidths = new int[] { 100, 200 };
 		contentPane.setLayout(gbl_contentPane);
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(8, 8, 8, 8); // Padding between elements
+		gbc.insets = new Insets(8, 8, 8, 8);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		// --- Name ---
@@ -91,7 +113,7 @@ public class StockView extends JFrame {
 		btnAdd = new JButton("Add Item");
 		btnAdd.setName("btnAdd");
 		btnAdd.setEnabled(false);
-		btnAdd.setBackground(new Color(70, 130, 180)); // Steel Blue
+		btnAdd.setBackground(new Color(70, 130, 180));
 		btnAdd.setForeground(Color.BLACK);
 		gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
 		contentPane.add(btnAdd, gbc);
@@ -100,21 +122,31 @@ public class StockView extends JFrame {
 		stockTable = new JTable(new DefaultTableModel(new Object[][] {}, new String[] { "Product", "Price", "Qty" }));
 		stockTable.setName("stockTable");
 		stockTable.setRowHeight(25);
+		
 		stockTable.getSelectionModel().addListSelectionListener(e -> {
-			btnDelete.setEnabled(stockTable.getSelectedRow() != -1);
+			boolean rowSelected = stockTable.getSelectedRow() != -1;
+			btnDelete.setEnabled(rowSelected);
+			btnUpdate.setEnabled(rowSelected);
 		});
 
 		JScrollPane scrollPane = new JScrollPane(stockTable);
-		gbc.gridy = 4; gbc.weighty = 1.0; // Makes table expand to fill space
+		gbc.gridy = 4; gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		contentPane.add(scrollPane, gbc);
+
+		// --- Update Button ---
+		btnUpdate = new JButton("Update Selected Quantity");
+		btnUpdate.setName("btnUpdate");
+		btnUpdate.setEnabled(false); 
+		gbc.gridy = 5; gbc.weighty = 0; gbc.fill = GridBagConstraints.HORIZONTAL;
+		contentPane.add(btnUpdate, gbc);
 
 		// --- Delete Button ---
 		btnDelete = new JButton("Delete Selected");
 		btnDelete.setName("btnDelete");
-		btnDelete.setEnabled(false);
-		btnDelete.setForeground(new Color(178, 34, 34)); // Firebrick Red
-		gbc.gridy = 5; gbc.weighty = 0; gbc.fill = GridBagConstraints.HORIZONTAL;
+		btnDelete.setEnabled(false); 
+		btnDelete.setForeground(new Color(178, 34, 34));
+		gbc.gridy = 6;
 		contentPane.add(btnDelete, gbc);
 
 		// --- Error Message ---
@@ -122,8 +154,25 @@ public class StockView extends JFrame {
 		lblErrorMessage.setName("errorMessageLabel");
 		lblErrorMessage.setForeground(Color.RED);
 		lblErrorMessage.setFont(new Font("SansSerif", Font.ITALIC, 11));
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 		contentPane.add(lblErrorMessage, gbc);
+
+		// --- Update Action Listener ---
+		
+		btnUpdate.addActionListener(e -> {
+			int selectedRow = stockTable.getSelectedRow();
+			
+			if (selectedRow != -1) {
+				String newQty = txtQuantity.getText();
+				stockTable.setValueAt(newQty, selectedRow, 2);
+				
+		        if (controller != null) {
+		        	String name = (String) stockTable.getValueAt(selectedRow, 0);
+		        	double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
+		        	controller.updateStockItem(new StockItem(name, 0, price), Integer.parseInt(newQty));
+		        	}
+		        }
+			});
 
 		// --- Key Listeners ---
 		KeyAdapter btnAddEnabler = new KeyAdapter() {

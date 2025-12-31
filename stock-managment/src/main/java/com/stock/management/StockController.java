@@ -14,4 +14,8 @@ public class StockController {
 	public void deleteItem(StockItem item) {
 		service.delete(item); // Fixed: Calls service
 		}
+	public void updateStockItem(StockItem item, int newQuantity) {
+		service.updateItemQuantity(item, newQuantity);
+		view.showAllStock(service.getAllItems());
+	}
 }
