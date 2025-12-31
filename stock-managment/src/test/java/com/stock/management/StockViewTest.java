@@ -127,21 +127,18 @@ class StockViewTest {
 		assertEquals("1.5", contents[0][1]);
 		assertEquals("10", contents[0][2]);
 	}
-
-	// --- NEW RED TEST FOR UPDATE BUTTON ---
+	
+	
 	@Test
 	public void testUpdateProductQuantityUpdatesTableDisplay() {
-		// 1. Arrange: Put an item in and select it
+		
 		StockItem item = new StockItem("Apple", 10, 1.5);
 		GuiActionRunner.execute(() -> view.showAllStock(Arrays.asList(item)));
 		window.table("stockTable").selectRows(0);
 		
-		// 2. Act: Enter a new quantity and click update
 		window.textBox("txtQuantity").deleteText().enterText("50");
 		window.button("btnUpdate").click();
 		
-		// 3. Assert: The 3rd column (index 2) should be "50"
-		// THIS WILL FAIL (RED) because btnUpdate has no listener yet
 		String[][] contents = window.table("stockTable").contents();
 		assertEquals("50", contents[0][2]);
 	}

@@ -28,9 +28,12 @@ public class StockView extends JFrame {
 	private JTextField txtPrice;
 	private JButton btnAdd;
 	private JButton btnDelete;
-	private JButton btnUpdate; // Added for the new feature
+	private JButton btnUpdate; 
 	private JTable stockTable;
 	private JLabel lblErrorMessage;
+	
+	// Added controller field to satisfy tests
+	private StockController controller;
 
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -41,6 +44,11 @@ public class StockView extends JFrame {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	// Added setter for the controller
+	public void setController(StockController controller) {
+		this.controller = controller;
 	}
 
 	public JTable getStockTable() {
@@ -62,7 +70,7 @@ public class StockView extends JFrame {
 	public StockView() {
 		setTitle("Stock Manager Pro");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 600); // Increased height slightly for new button
+		setBounds(100, 100, 500, 600); 
 
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(245, 245, 245));
@@ -115,7 +123,6 @@ public class StockView extends JFrame {
 		stockTable.setName("stockTable");
 		stockTable.setRowHeight(25);
 		
-		// Listener for enabling/disabling buttons based on selection
 		stockTable.getSelectionModel().addListSelectionListener(e -> {
 			boolean rowSelected = stockTable.getSelectedRow() != -1;
 			btnDelete.setEnabled(rowSelected);
@@ -127,17 +134,17 @@ public class StockView extends JFrame {
 		gbc.fill = GridBagConstraints.BOTH;
 		contentPane.add(scrollPane, gbc);
 
-		// --- Update Button (New) ---
+		// --- Update Button ---
 		btnUpdate = new JButton("Update Selected Quantity");
 		btnUpdate.setName("btnUpdate");
-		btnUpdate.setEnabled(false); // Starts disabled
+		btnUpdate.setEnabled(false); 
 		gbc.gridy = 5; gbc.weighty = 0; gbc.fill = GridBagConstraints.HORIZONTAL;
 		contentPane.add(btnUpdate, gbc);
 
 		// --- Delete Button ---
 		btnDelete = new JButton("Delete Selected");
 		btnDelete.setName("btnDelete");
-		btnDelete.setEnabled(false); // Starts disabled
+		btnDelete.setEnabled(false); 
 		btnDelete.setForeground(new Color(178, 34, 34));
 		gbc.gridy = 6;
 		contentPane.add(btnDelete, gbc);
@@ -149,6 +156,23 @@ public class StockView extends JFrame {
 		lblErrorMessage.setFont(new Font("SansSerif", Font.ITALIC, 11));
 		gbc.gridy = 7;
 		contentPane.add(lblErrorMessage, gbc);
+
+		// --- Update Action Listener ---
+		
+		btnUpdate.addActionListener(e -> {
+			int selectedRow = stockTable.getSelectedRow();
+			
+			if (selectedRow != -1) {
+				String newQty = txtQuantity.getText();
+				stockTable.setValueAt(newQty, selectedRow, 2);
+				
+		        if (controller != null) {
+		        	String name = (String) stockTable.getValueAt(selectedRow, 0);
+		        	double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
+		        	controller.updateStockItem(new StockItem(name, 0, price), Integer.parseInt(newQty));
+		        	}
+		        }
+			});
 
 		// --- Key Listeners ---
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
