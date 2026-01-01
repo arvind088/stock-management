@@ -11,6 +11,8 @@ import javax.swing.table.DefaultTableModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +21,13 @@ class StockViewTest {
 	
 	private FrameFixture window;
 	private StockView view; // Keep a reference to the view directly
+	private StockController controller;
 	
 	@BeforeEach
 	void setUp() {
 		// Initialize the view and window correctly
 		view = GuiActionRunner.execute(StockView::new);
+		controller = mock(StockController.class);
 		window = new FrameFixture(view);
 		window.show();
 	}
@@ -139,7 +143,6 @@ class StockViewTest {
 		window.textBox("txtQuantity").deleteText().enterText("50");
 		window.button("btnUpdate").click();
 		
-		String[][] contents = window.table("stockTable").contents();
-		assertEquals("50", contents[0][2]);
+		verify(controller).updateStockItem(new StockItem("Apple", 10, 1.5), 50);
 	}
 }

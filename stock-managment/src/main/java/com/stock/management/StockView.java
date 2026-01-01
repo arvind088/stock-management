@@ -161,18 +161,17 @@ public class StockView extends JFrame {
 		
 		btnUpdate.addActionListener(e -> {
 			int selectedRow = stockTable.getSelectedRow();
-			
-			if (selectedRow != -1) {
-				String newQty = txtQuantity.getText();
-				stockTable.setValueAt(newQty, selectedRow, 2);
-				
-		        if (controller != null) {
-		        	String name = (String) stockTable.getValueAt(selectedRow, 0);
-		        	double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
-		        	controller.updateStockItem(new StockItem(name, 0, price), Integer.parseInt(newQty));
-		        	}
-		        }
-			});
+			if (selectedRow != -1 && controller != null) {
+				try{
+					String name = (String) stockTable.getValueAt(selectedRow, 0);
+					double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
+					int newQty = Integer.parseInt(txtQuantity.getText());
+					controller.updateStockItem(new StockItem(name, 0, price), newQty);
+					}catch (NumberFormatException ex) {
+						lblErrorMessage.setText("Invalid quantity");
+						}
+				}
+		});
 
 		// --- Key Listeners ---
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
