@@ -40,6 +40,5 @@ public class MongoStockRepository implements StockRepository {
 
 	@Override
 	public void delete(StockItem item) {
-		
-	}
+		}
 }

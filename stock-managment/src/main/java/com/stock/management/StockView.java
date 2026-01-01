@@ -161,7 +161,6 @@ public class StockView extends JFrame {
 		
 		btnUpdate.addActionListener(e -> {
 			int selectedRow = stockTable.getSelectedRow();
-			if (selectedRow != -1 && controller != null) {
 				try{
 					String name = (String) stockTable.getValueAt(selectedRow, 0);
 					double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
@@ -170,7 +169,7 @@ public class StockView extends JFrame {
 					}catch (NumberFormatException ex) {
 						lblErrorMessage.setText("Invalid quantity");
 						}
-				}
+				
 		});
 
 		// --- Key Listeners ---
