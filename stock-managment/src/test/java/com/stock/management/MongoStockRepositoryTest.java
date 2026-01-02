@@ -71,4 +71,8 @@ class MongoStockRepositoryTest {
 		// 3. Assertion: Verify it was actually removed
 		assertThat(repository.findAll()).isEmpty();
 }
+
+	public void update(String name, int newQuantity) {
+		
+	}
 }

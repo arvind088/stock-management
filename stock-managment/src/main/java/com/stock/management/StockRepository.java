@@ -8,4 +8,5 @@ public interface StockRepository {
 	
 	void delete(StockItem item);
 	void delete(String string);
+	void update(String string, int i);
 	}

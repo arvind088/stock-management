@@ -46,4 +46,10 @@ public class MongoStockRepository implements StockRepository {
 	@Override
 	public void delete(StockItem item) {
 		}
+
+	@Override
+	public void update(String string, int i) {
+		// TODO Auto-generated method stub
+		
+	}
 }
