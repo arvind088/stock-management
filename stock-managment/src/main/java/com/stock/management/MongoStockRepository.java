@@ -8,6 +8,8 @@ import java.util.stream.StreamSupport;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
 
 public class MongoStockRepository implements StockRepository {
 
@@ -38,10 +40,9 @@ public class MongoStockRepository implements StockRepository {
 		}
 
 	@Override
-	public void delete(String string) {
-		
+	public void delete(String name) {
+		collection.deleteOne(Filters.eq("name", name));
 	}
-	
 	@Override
 	public void delete(StockItem item) {
 		}
