@@ -29,7 +29,6 @@ public class MongoStockRepository implements StockRepository {
 
 	@Override
 	public List<StockItem> findAll() {
-		// Minimum code to pass: Map all documents back to StockItem objects
 		return StreamSupport.stream(collection.find().spliterator(), false)
 				.map(doc -> new StockItem(
 						doc.getString("name"),
@@ -38,6 +37,11 @@ public class MongoStockRepository implements StockRepository {
 				.collect(Collectors.toList());
 		}
 
+	@Override
+	public void delete(String string) {
+		
+	}
+	
 	@Override
 	public void delete(StockItem item) {
 		}

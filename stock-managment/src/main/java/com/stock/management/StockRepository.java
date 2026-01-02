@@ -7,4 +7,5 @@ public interface StockRepository {
 	List<StockItem> findAll();
 	
 	void delete(StockItem item);
+	void delete(String string);
 	}

@@ -58,4 +58,17 @@ class MongoStockRepositoryTest {
 		
 		assertThat(items).containsExactly(item);
 	}
+
+	@Test
+	void testDelete() {
+		// 1. Setup: Save an item to the database
+		StockItem item = new StockItem("Orange", 5, 2.0);
+		repository.save(item);
+		
+		// 2. Action: Call the delete method
+		repository.delete("Orange");
+		
+		// 3. Assertion: Verify it was actually removed
+		assertThat(repository.findAll()).isEmpty();
+}
 }
