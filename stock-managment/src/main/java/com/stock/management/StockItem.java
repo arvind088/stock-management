@@ -41,17 +41,17 @@ public class StockItem {
 	
 	@Override
 	public boolean equals(Object obj) {
-	    if (this == obj) return true;
-	    if (obj == null || getClass() != obj.getClass()) return false;
-	    StockItem other = (StockItem) obj;
-	    // We compare values so the test passes regardless of memory address
-	    return Double.compare(other.price, price) == 0 && 
-	           quantity == other.quantity && 
-	           java.util.Objects.equals(name, other.name);
-	}
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
+		StockItem other = (StockItem) obj;
+		// We compare values so the test passes regardless of memory address
+		return Double.compare(other.price, price) == 0 && 
+				quantity == other.quantity && 
+				java.util.Objects.equals(name, other.name);
+		}
 
 	@Override
 	public int hashCode() {
-	    return java.util.Objects.hash(name, quantity, price);
+		return java.util.Objects.hash(name, quantity, price);
 	}
 }

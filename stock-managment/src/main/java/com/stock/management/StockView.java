@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,13 +39,32 @@ public class StockView extends JFrame {
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
 			try {
-				StockView frame = new StockView();
-				frame.setVisible(true);
+				// 1. Connect to the FIXED port we set in the docker run command
+				String mongoUri = "mongodb://localhost:27017";
+				com.mongodb.client.MongoClient mongoClient = com.mongodb.client.MongoClients.create(mongoUri);
+	            
+				// 2. Setup the Repository with your database name
+				StockRepository repository = new MongoStockRepository(mongoClient, "stock_management_db", "items");
+				// 3. Follow the Chain of Command
+				StockService service = new StockService(repository);
+				StockView view = new StockView();
+				StockController controller = new StockController(view, service);
+				
+				// 4. Connect View to Controller
+				view.setController(controller);
+				
+				// 5. Initial Read (to show existing items if the DB isn't empty)
+				view.showAllStock(service.getAllItems());
+				
+				// 6. Make the window stay open
+				view.setVisible(true);
+				
 			} catch (Exception e) {
+				System.err.println("Error: Could not connect to MongoDB. Is Docker running?");
 				e.printStackTrace();
-			}
-		});
-	}
+				}
+			});
+		}
 
 	// Added setter for the controller
 	public void setController(StockController controller) {

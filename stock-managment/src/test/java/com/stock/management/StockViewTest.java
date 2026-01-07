@@ -135,10 +135,8 @@ class StockViewTest {
 		assertEquals("10", contents[0][2]);
 	}
 	
-	
 	@Test
 	public void testUpdateProductQuantityUpdatesTableDisplay() {
-		
 		StockItem item = new StockItem("Apple", 10, 1.5);
 		GuiActionRunner.execute(() -> view.showAllStock(Arrays.asList(item)));
 		window.table("stockTable").selectRows(0);

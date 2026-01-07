@@ -7,15 +7,21 @@ public class StockController {
 	public StockController(StockView view, StockService service) {
 		this.view = view;
 		this.service = service;
-		}
+	}
+
 	public void addNewItem(StockItem item) {
 		service.registerItem(item);
-		}
-	public void deleteItem(StockItem item) {
-		service.delete(item); // Fixed: Calls service
-		}
+		view.showAllStock(service.getAllItems()); 
+	}
+
 	public void updateStockItem(StockItem item, int newQuantity) {
 		service.updateItemQuantity(item, newQuantity);
+		view.showAllStock(service.getAllItems());
+	}
+
+	public void deleteStockItem(StockItem item) {
+		// FIX: Use the corrected service method name
+		service.deleteItem(item); 
 		view.showAllStock(service.getAllItems());
 	}
 }
