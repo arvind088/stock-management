@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,13 +39,32 @@ public class StockView extends JFrame {
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(() -> {
 			try {
-				StockView frame = new StockView();
-				frame.setVisible(true);
+				// 1. Connect to the FIXED port we set in the docker run command
+				String mongoUri = "mongodb://localhost:27017";
+				com.mongodb.client.MongoClient mongoClient = com.mongodb.client.MongoClients.create(mongoUri);
+	            
+				// 2. Setup the Repository with your database name
+				StockRepository repository = new MongoStockRepository(mongoClient, "stock_management_db", "items");
+				// 3. Follow the Chain of Command
+				StockService service = new StockService(repository);
+				StockView view = new StockView();
+				StockController controller = new StockController(view, service);
+				
+				// 4. Connect View to Controller
+				view.setController(controller);
+				
+				// 5. Initial Read (to show existing items if the DB isn't empty)
+				view.showAllStock(service.getAllItems());
+				
+				// 6. Make the window stay open
+				view.setVisible(true);
+				
 			} catch (Exception e) {
+				System.err.println("Error: Could not connect to MongoDB. Is Docker running?");
 				e.printStackTrace();
-			}
-		});
-	}
+				}
+			});
+		}
 
 	// Added setter for the controller
 	public void setController(StockController controller) {
@@ -161,18 +181,16 @@ public class StockView extends JFrame {
 		
 		btnUpdate.addActionListener(e -> {
 			int selectedRow = stockTable.getSelectedRow();
-			
-			if (selectedRow != -1) {
-				String newQty = txtQuantity.getText();
-				stockTable.setValueAt(newQty, selectedRow, 2);
+				try{
+					String name = (String) stockTable.getValueAt(selectedRow, 0);
+					double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
+					int newQty = Integer.parseInt(txtQuantity.getText());
+					controller.updateStockItem(new StockItem(name, 0, price), newQty);
+					}catch (NumberFormatException ex) {
+						lblErrorMessage.setText("Invalid quantity");
+						}
 				
-		        if (controller != null) {
-		        	String name = (String) stockTable.getValueAt(selectedRow, 0);
-		        	double price = Double.parseDouble(stockTable.getValueAt(selectedRow, 1).toString());
-		        	controller.updateStockItem(new StockItem(name, 0, price), Integer.parseInt(newQty));
-		        	}
-		        }
-			});
+		});
 
 		// --- Key Listeners ---
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
