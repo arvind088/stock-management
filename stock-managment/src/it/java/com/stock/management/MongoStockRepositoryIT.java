@@ -16,27 +16,27 @@ import com.mongodb.client.MongoCollection;
 @Testcontainers
 public class MongoStockRepositoryIT {
 
-    @Container
-    public static MongoDBContainer mongo = new MongoDBContainer("mongo:6.0.5");
+	@Container
+	public static MongoDBContainer mongo = new MongoDBContainer("mongo:6.0.5");
 
-    private MongoClient client;
-    private MongoStockRepository repository;
-    private MongoCollection<Document> collection;
+	private MongoClient client;
+	private MongoStockRepository repository;
+	private MongoCollection<Document> collection;
 
-    @BeforeEach
-    void setup() {
-        client = MongoClients.create(mongo.getReplicaSetUrl());
-        repository = new MongoStockRepository(client, "test-db", "test-collection");
-        collection = client.getDatabase("test-db").getCollection("test-collection");
-        collection.drop(); // Start fresh for every test
-    }
+	@BeforeEach
+	void setup() {
+		client = MongoClients.create(mongo.getReplicaSetUrl());
+		repository = new MongoStockRepository(client, "test-db", "test-collection");
+		collection = client.getDatabase("test-db").getCollection("test-collection");
+		collection.drop(); // Start fresh for every test
+	}
 
-    @Test
-    void testSaveAndFindAll() {
-        StockItem item = new StockItem("Laptop", 5, 1200.0);
+	@Test
+	void testSaveAndFindAll() {
+		StockItem item = new StockItem("Laptop", 5, 1200.0);
 
-        repository.save(item);
+		repository.save(item);
 
-        assertThat(repository.findAll()).containsExactly(item);
-    }
+		assertThat(repository.findAll()).containsExactly(item);
+	}
 }
