@@ -81,15 +81,18 @@ class StockItemTest {
 	
 	@Test
 	public void testEqualsBranchCoverage() {
-		StockItem item1 = new StockItem("Apple", 10, 1.5);
-		
-		// Line 44: if (this == obj) return true;
-		assertThat(item1).isEqualTo(item1);
+		StockItem base = new StockItem("Apple", 10, 1.5);
 
-		// Line 45: if (obj == null || getClass() != obj.getClass()) return false;
-		assertThat(item1).isNotEqualTo(null);
-		
-		// Compare against a different class
-		assertThat(item1).isNotEqualTo("Not a StockItem");
+	    // 1️⃣ price comparison FALSE → short-circuit at first &&
+	    assertThat(base.equals(new StockItem("Apple", 10, 9.9))).isFalse();
+
+	    // 2️⃣ price TRUE, quantity FALSE → short-circuit at second &&
+	    assertThat(base.equals(new StockItem("Apple", 99, 1.5))).isFalse();
+
+	    // 3️⃣ price TRUE, quantity TRUE, name FALSE → third && evaluated
+	    assertThat(base.equals(new StockItem("Orange", 10, 1.5))).isFalse();
+
+	    // 4️⃣ all TRUE → full path
+	    assertThat(base.equals(new StockItem("Apple", 10, 1.5))).isTrue();
 	}
 }
