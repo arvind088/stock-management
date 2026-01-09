@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Put the secret into env once, then we can safely use env.* in if:
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,17 +31,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb
 
-      # ✅ Always run: UI + unit + IT + JaCoCo report
+      # Always run: UI + unit + IT + JaCoCo
       - name: Build & run tests (UI + unit + IT) with Xvfb
         run: >
           xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24"
           mvn -B -ntp -e clean verify
+          --file stock-managment/pom.xml
 
-      # ✅ Only runs AFTER you create SonarCloud + add SONAR_TOKEN + set vars
+      # Only run Sonar if the token exists (avoids red builds)
       - name: SonarCloud analysis
-        if: ${{ secrets.SONAR_TOKEN != '' }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: >
           mvn -B -ntp -e sonar:sonar
           --file stock-managment/pom.xml
