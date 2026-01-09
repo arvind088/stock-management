@@ -46,3 +46,14 @@ jobs:
           -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.coverage.jacoco.xmlReportPaths=stock-managment/target/site/jacoco/jacoco.xml
+      - name: Build, test (UI + unit + IT), coverage, and SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          xvfb-run -a
+          mvn -B -ntp -e clean verify sonar:sonar
+          --file stock-managment/pom.xml
+          -Dsonar.projectKey=YOUR_SONAR_PROJECT_KEY
+          -Dsonar.organization=YOUR_SONAR_ORG
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.coverage.jacoco.xmlReportPaths=stock-managment/target/site/jacoco/jacoco.xml
