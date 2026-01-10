@@ -51,4 +51,3 @@ jobs:
           -Dsonar.projectKey=arvind088_stock-management
           -Dsonar.organization=arvind088
           -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.coverage.jacoco.xmlReportPaths=stock-managment/target/site/jacoco/jacoco.xml
