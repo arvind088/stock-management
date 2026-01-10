@@ -1,27 +1,27 @@
-name: Java CI with Maven
+name: Java CI with Maven, Docker and SonarCloud in Linux
 
 on:
   push:
-    branches: [ "master", "main" ]
   pull_request:
-    branches: [ "master", "main" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
+          # Shallow clones should be disabled for a better relevancy of Sonar analysis
           fetch-depth: 0
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: "17"
-          distribution: "temurin"
+          java-version: 17
+          distribution: temurin
           cache: maven
 
       - name: Install Xvfb (virtual display)
@@ -29,25 +29,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xvfb
 
-      - name: Build & run tests (UI + unit + IT) with Xvfb
-        run: >
-          xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24"
-          mvn -B -ntp -e clean verify
-          --file stock-managment/pom.xml
-
-      - name: Cache SonarCloud packages
+      - name: Cache Maven + Sonar packages
         uses: actions/cache@v4
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          path: |
+            ~/.m2
+            ~/.sonar/cache
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
+          restore-keys: ${{ runner.os }}-m2-
 
-      - name: SonarCloud analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Set Maven Additional Goals
+        run: |
+          echo "SONARGOAL=sonar:sonar" >> $GITHUB_ENV
+        if: ${{ env.SONAR_TOKEN }}
+
+      - name: Build with Maven and SonarCloud
         run: >
-          mvn -B -ntp -e sonar:sonar
-          --file stock-managment/pom.xml
-          -Dsonar.projectKey=arvind088_stock-management
+          xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24"
+          mvn -B -ntp -e clean verify $SONARGOAL
           -Dsonar.organization=arvind088
           -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.projectKey=arvind088_stock-management
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+        working-directory: stock-managment
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
