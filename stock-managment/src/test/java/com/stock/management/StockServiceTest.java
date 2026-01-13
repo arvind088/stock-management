@@ -1,11 +1,16 @@
 package com.stock.management;
 
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StockServiceTest {
+	
 	private StockRepository repository;
 	private StockService service;
 	
@@ -37,14 +42,24 @@ class StockServiceTest {
 	}
 	
 	@Test
-	public void testRegisterItemNullThrowsException() {
+	void testRegisterItemNullThrowsException() {
 		assertThatThrownBy(() -> service.registerItem(null))
-				.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 	
 	@Test
-	public void testGetAllItemsCallsRepository() {
-		service.getAllItems();
+	void testGetAllItemsReturnsRepositoryItems() {
+		StockItem item = new StockItem("Apple", 10, 1.5);
+		List<StockItem> repoItems = List.of(item);
+
+		when(repository.findAll()).thenReturn(repoItems);
+
+		List<StockItem> result = service.getAllItems();
+
+		assertThat(result).isEqualTo(repoItems);
+		assertThat(result).hasSize(1);
+		assertThat(result).containsExactly(item);
+
 		verify(repository).findAll();
 	}
 }

@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.stock</groupId>
     <artifactId>stock-managment</artifactId>
@@ -14,6 +15,12 @@
         <junit.version>5.11.0</junit.version>
         <mockito.version>5.11.0</mockito.version>
         <testcontainers.version>1.19.3</testcontainers.version>
+        <surefire.version>3.2.5</surefire.version>
+        <failsafe.version>3.2.5</failsafe.version>
+        <buildhelper.version>3.2.0</buildhelper.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <pitest.version>1.15.3</pitest.version>
+        <pitest.junit5.version>1.2.1</pitest.junit5.version>
     </properties>
     <dependencies>
         <dependency>
@@ -31,6 +38,12 @@
             <artifactId>log4j-core</artifactId>
             <version>2.23.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.11.1</version>
+        </dependency>
+        <!-- TEST deps -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -56,11 +69,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.11.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mongodb</artifactId>
             <version>${testcontainers.version}</version>
@@ -75,52 +83,20 @@
     </dependencies>
     <build>
         <plugins>
-            <!-- Unit tests -->
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
-                    <useModulePath>false</useModulePath>
-                    <!-- IMPORTANT: keep ${argLine} so JaCoCo can inject its agent -->
-                    <argLine>
-                        ${argLine}
-                        --add-opens java.base/java.util=ALL-UNNAMED
-                        --add-opens java.base/java.lang=ALL-UNNAMED
-                        --add-opens java.desktop/java.awt=ALL-UNNAMED
-                        --add-opens java.desktop/javax.swing=ALL-UNNAMED
-                    </argLine>
+                    <release>17</release>
                 </configuration>
             </plugin>
-            <!-- Mutation testing -->
-            <plugin>
-                <groupId>org.pitest</groupId>
-                <artifactId>pitest-maven</artifactId>
-                <version>1.15.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.pitest</groupId>
-                        <artifactId>pitest-junit5-plugin</artifactId>
-                        <version>1.2.1</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <targetClasses>
-                        <param>com.stock.management.*</param>
-                    </targetClasses>
-                    <targetTests>
-                        <param>com.stock.management.*</param>
-                    </targetTests>
-                    <excludedClasses>
-                        <param>com.stock.management.*View</param>
-                    </excludedClasses>
-                </configuration>
-            </plugin>
-            <!-- Add custom test source folders -->
+            <!-- Add custom test source folders (IT + E2E) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${buildhelper.version}</version>
                 <executions>
                     <execution>
                         <id>add-test-source</id>
@@ -137,39 +113,11 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Integration tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.2.5</version>
-                <executions>
-                    <execution>
-                        <id>default-it</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- IMPORTANT: keep ${argLine} so JaCoCo can inject its agent -->
-                    <argLine>
-                        ${argLine}
-                        --add-opens java.base/java.util=ALL-UNNAMED
-                        --add-opens java.base/java.lang=ALL-UNNAMED
-                        --add-opens java.desktop/java.awt=ALL-UNNAMED
-                        --add-opens java.desktop/javax.swing=ALL-UNNAMED
-                    </argLine>
-                    <includes>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-            <!-- Coverage (unit + IT) -->
+            <!-- JaCoCo -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>${jacoco.version}</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -191,12 +139,53 @@
                         <format>XML</format>
                         <format>HTML</format>
                     </formats>
+                    <!-- Exclude bootstrap/UI entry points from coverage -->
+                    <excludes>
+                        <exclude>**/*View.class</exclude>
+                        <exclude>**/*App.class</exclude>
+                        <exclude>**/*Main*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- Unit tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <!-- KEEP ${argLine} FIRST (JaCoCo injects here) -->
+                    <argLine>${argLine} --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED</argLine>
+                </configuration>
+            </plugin>
+            <!-- Integration tests (Failsafe) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-it</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <argLine>${argLine} --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED</argLine>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <outputDirectory>${project.build.directory}/site</outputDirectory>
+    </reporting>
     <profiles>
-        <!-- Keep E2E profile ONLY for running E2E tests -->
+        <!-- E2E tests -->
         <profile>
             <id>e2e</id>
             <build>
@@ -204,6 +193,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe.version}</version>
                         <executions>
                             <execution>
                                 <id>e2e-tests</id>
@@ -213,12 +203,63 @@
                                 </goals>
                                 <configuration>
                                     <testSourceDirectory>src/e2e/java</testSourceDirectory>
+                                    <argLine>${argLine} --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED</argLine>
                                     <includes>
                                         <include>**/*E2E.java</include>
                                     </includes>
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- PIT mutation testing -->
+        <profile>
+            <id>pit</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>${pitest.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>${pitest.junit5.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <!-- PIT runs in a forked JVM (minion). Add opens here too. -->
+                            <jvmArgs>
+                                <jvmArg>--add-opens=java.base/java.util=ALL-UNNAMED</jvmArg>
+                                <jvmArg>--add-opens=java.base/java.lang=ALL-UNNAMED</jvmArg>
+                                <jvmArg>--add-opens=java.desktop/java.awt=ALL-UNNAMED</jvmArg>
+                                <jvmArg>--add-opens=java.desktop/javax.swing=ALL-UNNAMED</jvmArg>
+                            </jvmArgs>
+                            <!-- Mutate only production code -->
+                            <targetClasses>
+                                <param>com.stock.management.*</param>
+                            </targetClasses>
+                            <!-- Run ONLY stable unit tests under PIT -->
+                            <targetTests>
+                                <param>com.stock.management.*Test</param>
+                            </targetTests>
+                            <!-- Explicitly exclude Swing/E2E tests -->
+                            <excludedTestClasses>
+                                <param>com.stock.management.StockViewTest</param>
+                                <param>com.stock.management.StockAppE2E</param>
+                                <param>com.stock.management.*E2E*</param>
+                            </excludedTestClasses>
+                            <!-- Exclude UI Views from mutation scope -->
+                            <excludedClasses>
+                                <param>com.stock.management.*View</param>
+                            </excludedClasses>
+                            <failWhenNoMutations>true</failWhenNoMutations>
+                            <mutationThreshold>75</mutationThreshold>
+                            <coverageThreshold>85</coverageThreshold>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
