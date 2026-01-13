@@ -1,6 +1,7 @@
 package com.stock.management;
 
 import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,66 +34,80 @@ class StockItemTest {
 	void testValidConstruction() {
 		StockItem item = new StockItem("Laptop", 10, 1000.0);
 		assertAll("Verify all fields",
-				() -> assertNotNull(item.getId()),
-				() -> assertEquals("Laptop", item.getName()),
-				() -> assertEquals(10, item.getQuantity()),
-				() -> assertEquals(1000.0, item.getPrice())
+			() -> assertNotNull(item.getId()),
+			() -> assertEquals("Laptop", item.getName()),
+			() -> assertEquals(10, item.getQuantity()),
+			() -> assertEquals(1000.0, item.getPrice())
 		);
 	}
 
 	@Test
 	void testNegativeQuantityThrows() {
-		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> new StockItem("Laptop", -1, 1000.0));
+		IllegalArgumentException ex = assertThrows(
+			IllegalArgumentException.class,
+			() -> new StockItem("Laptop", -1, 1000.0)
+		);
 		assertEquals("Quantity cannot be negative", ex.getMessage());
 	}
 	
 	@Test
 	void testNegativePriceThrows() {
-		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> new StockItem("Laptop", 10, -5.0));
+		IllegalArgumentException ex = assertThrows(
+			IllegalArgumentException.class,
+			() -> new StockItem("Laptop", 10, -5.0)
+		);
 		assertEquals("Price cannot be negative", ex.getMessage());
 	}
 
 	@Test
 	void testQuantityAtZeroShouldBeAllowed() {
-		// Testing the boundary to kill the PIT mutant
 		StockItem item = new StockItem("Apple", 0, 1.0);
 		assertEquals(0, item.getQuantity());
 	}
 
 	@Test
 	void testPriceAtZeroShouldBeAllowed() {
-		// Testing the exact boundary (0.0) to kill the PIT survivor
 		double zeroPrice = 0.0;
 		StockItem item = new StockItem("Free Sample", 10, zeroPrice);
-		
 		assertEquals(zeroPrice, item.getPrice(), 0.001);
 	}
 	
 	@Test
-	public void testHashCode() {
+	void testHashCode() {
 		StockItem item1 = new StockItem("Apple", 10, 1.5);
 		StockItem item2 = new StockItem("Apple", 10, 1.5);
-		
-		// This will force the execution of the hashCode() method
+		StockItem item3 = new StockItem("Orange", 99, 9.9);
+
+		assertThat(item1).isEqualTo(item2);
 		assertThat(item1.hashCode()).isEqualTo(item2.hashCode());
+
+		// Kills "return 0" mutant
+		assertThat(item1.hashCode()).isNotEqualTo(item3.hashCode());
 	}
 	
 	@Test
-	public void testEqualsBranchCoverage() {
+	void testEqualsBranchCoverage() {
 		StockItem base = new StockItem("Apple", 10, 1.5);
 
-	    // 1️⃣ price comparison FALSE → short-circuit at first &&
-	    assertThat(base.equals(new StockItem("Apple", 10, 9.9))).isFalse();
+		// 1️⃣ same reference → true
+		assertThat(base.equals(base)).isTrue();
 
-	    // 2️⃣ price TRUE, quantity FALSE → short-circuit at second &&
-	    assertThat(base.equals(new StockItem("Apple", 99, 1.5))).isFalse();
+		// 2️⃣ null comparison → false
+		assertThat(base.equals(null)).isFalse();
 
-	    // 3️⃣ price TRUE, quantity TRUE, name FALSE → third && evaluated
-	    assertThat(base.equals(new StockItem("Orange", 10, 1.5))).isFalse();
+		// 3️⃣ different class → false
+		assertThat(base.equals("not a StockItem")).isFalse();
 
-	    // 4️⃣ all TRUE → full path
-	    assertThat(base.equals(new StockItem("Apple", 10, 1.5))).isTrue();
+		// 4️⃣ price differs → false
+		assertThat(base.equals(new StockItem("Apple", 10, 9.9))).isFalse();
+
+		// 5️⃣ quantity differs → false
+		assertThat(base.equals(new StockItem("Apple", 99, 1.5))).isFalse();
+
+		// 6️⃣ name differs → false
+		assertThat(base.equals(new StockItem("Orange", 10, 1.5))).isFalse();
+
+		// 7️⃣ all fields equal → true
+		assertThat(base.equals(new StockItem("Apple", 10, 1.5))).isTrue();
 	}
 }
