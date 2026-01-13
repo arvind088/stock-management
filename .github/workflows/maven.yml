@@ -32,3 +32,6 @@ jobs:
 
       - name: Build & Run tests (UI + unit + IT ) with Xvfb
         run: xvfb-run -a mvn -B -e verify --file stock-managment/pom.xml
+
+      - name: SonarCloud analysis
+        run: mvn -B -e sonar:sonar --file stock-managment/pom.xml -Dsonar.coverage.jacoco.xmlReportPaths=stock-managment/target/site/jacoco/jacoco.xml
