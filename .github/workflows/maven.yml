@@ -29,10 +29,29 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb
+      - name: Cache Maven and Sonar packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.sonar/cache
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-
 
-      - name: Build & Run tests (UI + unit + IT ) with Xvfb
-        run: xvfb-run -a mvn -B -e verify --file stock-managment/pom.xml
+     
+      - name: Set Maven Additional Goals
+        run: |
+          echo "SONARGOAL=org.sonarsource.scanner.maven:sonar-maven-plugin:sonar" >> $GITHUB_ENV
+        if: ${{ env.SONAR_TOKEN }}
 
-      - name: SonarCloud analysis
-        run: mvn -B -e org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file stock-managment/pom.xml 
-          -Dsonar.coverage.jacoco.xmlReportPaths=stock-managment/target/site/jacoco/jacoco.xml
+      - name: Build with Maven and SonarCloud
+        run: >
+          xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24"
+          mvn -B -ntp -e clean verify $SONARGOAL
+          -Dsonar.organization=arvind088
+          -Dsonar.projectKey=arvind088_stock-management
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+        working-directory: stock-managment
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
