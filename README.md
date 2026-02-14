@@ -2,9 +2,6 @@
 
 [![MY TDD PROJECT](https://github.com/arvind088/stock-management/actions/workflows/maven.yml/badge.svg)](https://github.com/arvind088/stock-management/actions/workflows/maven.yml)
 
-[![Coverage Status](https://coveralls.io/repos/github/arvind088/stock-management/badge.svg?branch=master)](https://coveralls.io/github/arvind088/stock-management?branch=master)
-
-
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=arvind088_stock-management&metric=alert_status&branch=master)](https://sonarcloud.io/summary/new_code?id=arvind088_stock-management&branch=master)
 
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=arvind088_stock-management&metric=code_smells&branch=master)](https://sonarcloud.io/summary/new_code?id=arvind088_stock-management&branch=master)
